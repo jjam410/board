@@ -15,8 +15,17 @@ function MainContainer({ children }) {
 
     return (
         <div css={s.container}>
-            <button css={basicButton} onClick={handleSidebarOpen}><FiChevronsRight /></button>
-            {children}
+            <header css={s.header}>
+                {
+                    !isOpen && 
+                    <span css={s.sidebarOpenButton}>
+                        <button css={basicButton} onClick={handleSidebarOpen}><FiChevronsRight /></button>
+                    </span>
+                }
+            </header>
+            <main css={s.main}>
+                {children}
+            </main>
         </div>
     );
 }
