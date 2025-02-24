@@ -9,6 +9,12 @@ export const layout = css`
     height: 100%;
 `;
 
+export const groupBox = css`
+    box-sizing: border-box;
+    padding: 0.6rem 0;
+    width: 32.6rem;
+`;
+
 export const title1 = css`
     margin: 0.5rem 0;
     font-size: 2rem;

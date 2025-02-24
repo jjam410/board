@@ -5,8 +5,11 @@ import { SiGoogle, SiKakao, SiNaver } from "react-icons/si";
 import { Link } from 'react-router-dom';
 import ValidInput from '../../components/auth/ValidInput/ValidInput';
 import { useInputValid } from '../../hooks/validInputHook';
+import { useJoinMutation } from '../../mutations/authMutation';
 
 function JoinPage(props) {
+    const joinMutaion = useJoinMutation();
+
     const usernameInputData = useInputValid({
         regexp: /^[a-zA-Z][a-zA-Z0-9_]{3,15}$/, 
         errorText: "사용할 수 없는 사용자이름입니다.",
@@ -26,6 +29,10 @@ function JoinPage(props) {
 
     const isErrors = () => {
         const errors = [
+            !usernameInputData.value,
+            !emailInputData.value,
+            !passwordInputData.value,
+            !passwordCheckInputData.value,
             !!usernameInputData.errorMessage,
             !!emailInputData.errorMessage,
             !!passwordInputData.errorMessage,
@@ -36,11 +43,19 @@ function JoinPage(props) {
     }
 
     const handleJoinOnClick = () => {
-        if(isErrors) {
+        if(isErrors()) {
             alert("가입 정보를 다시 확인해주세요.");
             return;
         }
-
+        
+        joinMutaion.mutate({
+            username: usernameInputData.value, 
+            email: emailInputData.value, 
+            password: passwordInputData.value
+        });
+        if(joinMutaion.isError) {
+            console.log(joinMutaion.error);
+        }
     }
 
     return (
