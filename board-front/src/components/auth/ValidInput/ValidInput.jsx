@@ -1,8 +1,27 @@
 /**@jsxImportSource @emotion/react */
 import * as s from './style';
-import React from 'react';
+import React, { useState } from 'react';
 
-function ValidInput({type, name, placeholder, value, onChange, onBlur, onKeyDown, errorMessage}) {
+function ValidInput({
+    type, 
+    name, 
+    placeholder, 
+    value, 
+    onChange,
+    onFocus = null,
+    regexp, 
+    errorMessage,
+    inputValidError,
+    setInputValidError
+}) {
+    
+    const handleOnBlur = () => {
+        setInputValidError(prev => ({
+            ...prev,
+            [name]: !regexp.test(value),
+        }));
+    }
+
     return (
         <div css={s.groupBox}>
             <input css={s.textInput} 
@@ -11,11 +30,11 @@ function ValidInput({type, name, placeholder, value, onChange, onBlur, onKeyDown
                 placeholder={placeholder}
                 value={value}
                 onChange={onChange} 
-                onBlur={onBlur}
-                onKeyDown={onKeyDown}
+                onFocus={onFocus}
+                onBlur={handleOnBlur}
             />
             {
-                !!errorMessage &&
+                !!inputValidError[name] &&
                 <p css={s.messageText}>{errorMessage}</p>
             }
         </div>
