@@ -1,19 +1,29 @@
 package com.korit.boardback.service;
 
 import com.korit.boardback.dto.request.ReqJoinDto;
+import com.korit.boardback.dto.request.ReqLoginDto;
 import com.korit.boardback.entity.User;
 import com.korit.boardback.exception.DuplicatedValueException;
 import com.korit.boardback.exception.FieldError;
 import com.korit.boardback.repository.UserRepository;
+import com.korit.boardback.security.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class UserService {
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtUtil jwtUtil;
     @Autowired
     private UserRepository userRepository;
 
@@ -31,7 +41,7 @@ public class UserService {
         }
         User user = User.builder()
                 .username(reqJoinDto.getUsername())
-                .password(reqJoinDto.getPassword())
+                .password(passwordEncoder.encode(reqJoinDto.getPassword()))
                 .email(reqJoinDto.getEmail())
                 .nickname(reqJoinDto.getUsername())
                 .accountExpired(1)
@@ -42,4 +52,30 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public String login(ReqLoginDto dto) {
+        User user = userRepository
+                .findByUsername(dto.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("사용자 정보를 다시 확인하세요."));
+
+        if(!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("사용자 정보를 다시 확인하세요.");
+        }
+
+        Date expires = new Date(new Date().getTime() + (1000l * 60 * 60 * 24 * 7));
+
+        return jwtUtil.generateToken(
+                user.getUsername(),
+                Integer.toString(user.getUserId()),
+                expires);
+    }
+
 }
+
+
+
+
+
+
+
+
+
