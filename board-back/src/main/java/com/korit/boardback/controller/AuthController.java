@@ -2,6 +2,7 @@ package com.korit.boardback.controller;
 
 import com.korit.boardback.dto.request.ReqJoinDto;
 import com.korit.boardback.dto.request.ReqLoginDto;
+import com.korit.boardback.dto.response.RespTokenDto;
 import com.korit.boardback.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,12 @@ public class AuthController {
          * JwtUtil -> secret 세팅
          *
          */
-        return ResponseEntity.ok().body(userService.login(dto));
+        RespTokenDto respTokenDto = RespTokenDto.builder()
+                .type("JWT")
+                .name("AccessToken")
+                .token(userService.login(dto))
+                .build();
+
+        return ResponseEntity.ok().body(respTokenDto);
     }
 }

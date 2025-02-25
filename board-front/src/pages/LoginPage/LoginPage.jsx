@@ -2,14 +2,17 @@
 import * as s from './style';
 import React, { useState } from 'react';
 import { SiGoogle, SiKakao, SiNaver } from "react-icons/si";
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ValidInput from '../../components/auth/ValidInput/ValidInput';
 import { useLoginMutation } from '../../mutations/authMutation';
+import Swal from 'sweetalert2';
+import { setTokenLocalStorage } from '../../configs/axiosConfig';
 
 function LoginPage(props) {
+    const navigate = useNavigate();
     const loginMutation = useLoginMutation();
     const [ searchParams, setSearchParams ] = useSearchParams();
-    
+
     const [ inputValue, setInputValue ] = useState({
         username: searchParams.get("username"),
         password: ""
@@ -25,9 +28,25 @@ function LoginPage(props) {
     const handleLoginOnClick = async () => {
         try {
             const response = await loginMutation.mutateAsync(inputValue);
-            console.log(response.data);
+            const tokenName = response.data.name;
+            const accessToken = response.data.token;
+            setTokenLocalStorage(tokenName, accessToken);
+            await Swal.fire({
+                icon: "success",
+                text: "로그인 성공",
+                timer: 1000,
+                position:"center",
+                showConfirmButton: false,
+            });
+            navigate("/");
+            
         } catch(error) {
-
+            await Swal.fire({
+                title: '로그인 실패',
+                text: '사용자 정보를 다시 확인해주세요.',
+                confirmButtonText: '확인',
+                confirmButtonColor: "#e22323"
+            });
         }
     }
 
