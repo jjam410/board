@@ -51,6 +51,7 @@ public class JwtAuthenticationFilter implements Filter {
         String authorization = request.getHeader("Authorization");
 
         if (authorization != null && authorization.startsWith("Bearer ")) {
+            System.out.println("authorization: " + authorization);
             accessToken = authorization.substring(7);
         }
 

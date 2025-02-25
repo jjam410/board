@@ -3,18 +3,20 @@ import * as s from './style';
 import React, { useState } from 'react';
 import { SiGoogle, SiKakao, SiNaver } from "react-icons/si";
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import ValidInput from '../../components/auth/ValidInput/ValidInput';
 import { useLoginMutation } from '../../mutations/authMutation';
 import Swal from 'sweetalert2';
 import { setTokenLocalStorage } from '../../configs/axiosConfig';
+import { useUserMeQuery } from '../../queries/userQuery';
 
 function LoginPage(props) {
     const navigate = useNavigate();
     const loginMutation = useLoginMutation();
+    const loginUser = useUserMeQuery();
+
     const [ searchParams, setSearchParams ] = useSearchParams();
 
     const [ inputValue, setInputValue ] = useState({
-        username: searchParams.get("username"),
+        username: searchParams.get("username") || "",
         password: ""
     }); 
 
@@ -38,8 +40,8 @@ function LoginPage(props) {
                 position:"center",
                 showConfirmButton: false,
             });
+            loginUser.refetch();
             navigate("/");
-            
         } catch(error) {
             await Swal.fire({
                 title: '로그인 실패',

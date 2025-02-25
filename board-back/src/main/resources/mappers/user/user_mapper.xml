@@ -31,7 +31,7 @@
         <result property="credentialsExpired" column="credentials_expired" />
         <result property="accountEnabled" column="account_enabled" />
         <result property="createdAt" column="created_at" />
-        <collection property="userRoles" javaType="java.util.Set" resultMap="userRoleResultMap" />
+        <collection property="userRoles" resultMap="userRoleResultMap" />
     </resultMap>
 
     <select id="selectById" resultMap="userResultMap">
@@ -79,7 +79,7 @@
             ut.account_locked,
             ut.credentials_expired,
             ut.account_enabled,
-            ut.created_at
+            ut.created_at,
 
             urt.user_role_id,
             urt.user_id as urt_user_id,
