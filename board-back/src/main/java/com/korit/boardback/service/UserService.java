@@ -3,9 +3,11 @@ package com.korit.boardback.service;
 import com.korit.boardback.dto.request.ReqJoinDto;
 import com.korit.boardback.dto.request.ReqLoginDto;
 import com.korit.boardback.entity.User;
+import com.korit.boardback.entity.UserRole;
 import com.korit.boardback.exception.DuplicatedValueException;
 import com.korit.boardback.exception.FieldError;
 import com.korit.boardback.repository.UserRepository;
+import com.korit.boardback.repository.UserRoleRepository;
 import com.korit.boardback.security.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,6 +28,8 @@ public class UserService {
     private JwtUtil jwtUtil;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserRoleRepository userRoleRepository;
 
     public boolean duplicatedByUsername(String username) {
         return userRepository.findByUsername(username).isPresent();
@@ -49,7 +53,13 @@ public class UserService {
                 .credentialsExpired(1)
                 .accountEnabled(1)
                 .build();
-        return userRepository.save(user);
+        userRepository.save(user);
+        UserRole userRole = UserRole.builder()
+                .userId(user.getUserId())
+                .roleId(1)
+                .build();
+        userRoleRepository.save(userRole);
+        return user;
     }
 
     public String login(ReqLoginDto dto) {
