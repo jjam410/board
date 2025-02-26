@@ -42,6 +42,14 @@
             user_id = #{userId}
     </update>
 
+    <update id="updateNicknameById">
+        update user_tb
+        set
+            nickname = #{nickname}
+        where
+            user_id = #{userId}
+    </update>
+
     <select id="selectById" resultMap="userResultMap">
         select
             ut.user_id,

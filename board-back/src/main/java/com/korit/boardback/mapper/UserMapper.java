@@ -12,4 +12,7 @@ public interface UserMapper {
     int updateProfileImgById(
             @Param("userId") int userId,
             @Param("profileImg") String profileImg);
+    int updateNicknameById(
+            @Param("userId") int userId,
+            @Param("nickname") String nickname);
 }

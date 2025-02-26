@@ -13,4 +13,6 @@ export const updateProfileImgApi = async (formData) => {
         }
     );
 }
+
+export const updateNicknameApi = async (nickname) => await api.put("/api/user/profile/nickname", {nickname});
     

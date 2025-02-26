@@ -1,13 +1,18 @@
 /**@jsxImportSource @emotion/react */
+import ReactModal from 'react-modal';
 import { api } from '../../configs/axiosConfig';
-import { useUpdateProfileImgMutation } from '../../mutations/accountMutation';
+import { useUpdateNicknameMutation, useUpdateProfileImgMutation } from '../../mutations/accountMutation';
 import { useUserMeQuery } from '../../queries/userQuery';
 import * as s from './style';
 import React, { useEffect, useState } from 'react';
+import PasswordModal from '../../components/auth/PasswordModal/PasswordModal';
 
 function AccountPage(props) {
     const loginUser = useUserMeQuery();
     const updateProfileImgMutation = useUpdateProfileImgMutation();
+    const updateNicknameMutation = useUpdateNicknameMutation();
+
+    const [ passwordModalOpen, setPasswordModalOpen ] = useState(false);
     const [ nicknameValue, setNickNameValue ] = useState("");
 
     useEffect(() => {
@@ -26,6 +31,19 @@ function AccountPage(props) {
         loginUser.refetch();
     }
 
+    const handleNicknameInputOnChange = (e) => {
+        setNickNameValue(e.target.value);
+    }
+
+    const handleSaveNicknameButtonOnClick = async () => {
+        await updateNicknameMutation.mutateAsync(nicknameValue);
+        loginUser.refetch();
+    }
+
+    const handleChangePasswordButtonOnClick = () => {
+        setPasswordModalOpen(true);
+    }
+
     return (
         <div css={s.container}>
             <h2 css={s.title}>Account</h2>
@@ -40,9 +58,9 @@ function AccountPage(props) {
                 <div>
                     <h3 css={s.nicknameTitle}>Preferred nickname</h3>
                     <div>
-                        <input css={s.textInput} type="text" value={nicknameValue} />
+                        <input css={s.textInput} type="text" value={nicknameValue} onChange={handleNicknameInputOnChange} />
                     </div>
-                    <button css={s.saveButton}>Save nickname</button>
+                    <button css={s.saveButton} onClick={handleSaveNicknameButtonOnClick} disabled={loginUser?.data?.data.nickname === nicknameValue} >Save nickname</button>
                 </div>
             </div>
             
@@ -60,9 +78,29 @@ function AccountPage(props) {
                         <h3 css={s.subTitle}>password</h3>
                         <p css={s.subContent}>계정에 로그인할 영구 비밀번호를 설정합니다.</p>
                     </div>
-                    <button css={s.borderButton}>Change password</button>
+                    <button css={s.borderButton} onClick={handleChangePasswordButtonOnClick}>Change password</button>
                 </div>
             </div>
+            <ReactModal 
+                isOpen={passwordModalOpen}
+                onRequestClose={() => setPasswordModalOpen(false)}
+                style={{
+                    overlay: {
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "#00000066"
+                    },
+                    content: {
+                        position: "static",
+                        boxSizing: "border-box",
+                        borderRadius: "1.5rem",
+                        width: "35rem",
+                        height: "35rem",
+                    }
+                }}
+                children={<PasswordModal setOpen={setPasswordModalOpen} />}
+            />
         </div>
     );
 }
