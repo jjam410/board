@@ -1,31 +1,29 @@
 /**@jsxImportSource @emotion/react */
 import { api } from '../../configs/axiosConfig';
+import { useUpdateProfileImgMutation } from '../../mutations/accountMutation';
 import { useUserMeQuery } from '../../queries/userQuery';
 import * as s from './style';
 import React, { useEffect, useState } from 'react';
 
 function AccountPage(props) {
     const loginUser = useUserMeQuery();
+    const updateProfileImgMutation = useUpdateProfileImgMutation();
     const [ nicknameValue, setNickNameValue ] = useState("");
 
     useEffect(() => {
         setNickNameValue(loginUser?.data?.data.nickname);
     }, [loginUser.isFetched]);
 
-    const handleProfileImgFileOnChange = (e) => {
+    const handleProfileImgFileOnChange = async (e) => {
         console.log({element: e.target});
         const fileList = e.target.files;
         const file = fileList[0];
 
         const formData = new FormData();
         formData.append("file", file);
-        
-        api.post("/api/user/profile/img", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
 
+        await updateProfileImgMutation.mutateAsync(formData);
+        loginUser.refetch();
     }
 
     return (
@@ -33,7 +31,10 @@ function AccountPage(props) {
             <h2 css={s.title}>Account</h2>
             <div css={s.accountBox}>
                 <label css={s.profileImgBox}>
-                    <img src={`http://localhost:8080/image/user/profile/${loginUser?.data?.data.profileImg || "default.png"}`} alt="" />
+                    {
+                        loginUser.isLoading || 
+                        <img src={`http://localhost:8080/image/user/profile/${loginUser?.data?.data.profileImg}`} alt="" />
+                    }
                     <input type="file" onChange={handleProfileImgFileOnChange} />
                 </label>
                 <div>
