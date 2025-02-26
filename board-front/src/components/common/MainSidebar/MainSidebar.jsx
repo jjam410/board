@@ -39,7 +39,10 @@ function MainSidebar(props) {
                                 :
                                 <button css={emptyButton}>
                                     <span css={s.authText}>
-                                        <LuLockKeyhole />{loginUser.data?.data?.nickname}
+                                        <div css={s.profileImgBox}>
+                                            <img src="http://localhost:8080/image/user/profile/default.png" alt="" />
+                                        </div>
+                                        {loginUser.data?.data?.nickname}
                                     </span>
                                 </button>
                             }
