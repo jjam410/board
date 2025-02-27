@@ -33,6 +33,8 @@ public class UserService {
     private UserRoleRepository userRoleRepository;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private EmailService emailService;
 
     public boolean duplicatedByUsername(String username) {
         return userRepository.findByUsername(username).isPresent();
@@ -54,7 +56,7 @@ public class UserService {
                 .accountExpired(1)
                 .accountLocked(1)
                 .credentialsExpired(1)
-                .accountEnabled(1)
+                .accountEnabled(0)
                 .build();
         userRepository.save(user);
         UserRole userRole = UserRole.builder()
@@ -62,6 +64,11 @@ public class UserService {
                 .roleId(1)
                 .build();
         userRoleRepository.save(userRole);
+        try {
+            emailService.sendAuthMail(reqJoinDto.getEmail());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return user;
     }
 

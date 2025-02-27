@@ -1,10 +1,13 @@
 package com.korit.boardback.controller;
 
+import com.korit.boardback.dto.request.ReqAuthEmailDto;
 import com.korit.boardback.dto.request.ReqJoinDto;
 import com.korit.boardback.dto.request.ReqLoginDto;
 import com.korit.boardback.dto.response.RespTokenDto;
+import com.korit.boardback.service.EmailService;
 import com.korit.boardback.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +21,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Operation(summary = "회원가입", description = "회원가입 설명")
     @PostMapping("/join")
@@ -43,5 +49,11 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok().body(respTokenDto);
+    }
+
+    @PostMapping("/email")
+    public ResponseEntity<?> sendAuthEmail(@RequestBody ReqAuthEmailDto dto) throws MessagingException {
+        emailService.sendAuthMail(dto.getEmail());
+        return ResponseEntity.ok().build();
     }
 }
