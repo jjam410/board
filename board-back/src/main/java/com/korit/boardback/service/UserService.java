@@ -96,6 +96,12 @@ public class UserService {
         userRepository.updateNickname(user.getUserId(), nickname);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePassword(User user, String password) {
+        String encodedPassword = passwordEncoder.encode(password);
+        userRepository.updateNickname(user.getUserId(), encodedPassword);
+    }
+
 }
 
 

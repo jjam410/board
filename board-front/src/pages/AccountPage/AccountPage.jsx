@@ -4,7 +4,7 @@ import { api } from '../../configs/axiosConfig';
 import { useUpdateNicknameMutation, useUpdateProfileImgMutation } from '../../mutations/accountMutation';
 import { useUserMeQuery } from '../../queries/userQuery';
 import * as s from './style';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PasswordModal from '../../components/auth/PasswordModal/PasswordModal';
 
 function AccountPage(props) {
@@ -16,7 +16,7 @@ function AccountPage(props) {
     const [ nicknameValue, setNickNameValue ] = useState("");
 
     useEffect(() => {
-        setNickNameValue(loginUser?.data?.data.nickname);
+        setNickNameValue(loginUser?.data?.data.nickname || "");
     }, [loginUser.isFetched]);
 
     const handleProfileImgFileOnChange = async (e) => {
@@ -45,7 +45,7 @@ function AccountPage(props) {
     }
 
     return (
-        <div css={s.container}>
+        <div id='passwordModal' css={s.container}>
             <h2 css={s.title}>Account</h2>
             <div css={s.accountBox}>
                 <label css={s.profileImgBox}>
@@ -95,8 +95,7 @@ function AccountPage(props) {
                         position: "static",
                         boxSizing: "border-box",
                         borderRadius: "1.5rem",
-                        width: "35rem",
-                        height: "35rem",
+                        width: "37rem",
                     }
                 }}
                 children={<PasswordModal setOpen={setPasswordModalOpen} />}

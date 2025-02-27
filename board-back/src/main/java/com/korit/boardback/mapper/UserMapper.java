@@ -15,4 +15,7 @@ public interface UserMapper {
     int updateNicknameById(
             @Param("userId") int userId,
             @Param("nickname") String nickname);
+    int updatePasswordById(
+            @Param("userId") int userId,
+            @Param("password") String password);
 }
