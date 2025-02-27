@@ -99,7 +99,7 @@ public class UserService {
     @Transactional(rollbackFor = Exception.class)
     public void updatePassword(User user, String password) {
         String encodedPassword = passwordEncoder.encode(password);
-        userRepository.updateNickname(user.getUserId(), encodedPassword);
+        userRepository.updatePassword(user.getUserId(), encodedPassword);
     }
 
 }

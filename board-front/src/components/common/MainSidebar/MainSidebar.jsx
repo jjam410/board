@@ -9,6 +9,7 @@ import { LuLockKeyhole } from "react-icons/lu";
 import { useUserMeQuery } from '../../../queries/userQuery';
 import { useNavigate } from 'react-router-dom';
 import { BiLogOut } from "react-icons/bi";
+import { setTokenLocalStorage } from '../../../configs/axiosConfig';
 
 function MainSidebar(props) {
     const navigate = useNavigate();
@@ -25,6 +26,12 @@ function MainSidebar(props) {
 
     const handleAccountButtonOnClick = () => {
         navigate("/account/setting");
+    }
+
+    const handleLogoutButtonOnClick = () => {
+        setTokenLocalStorage("AccessToken", null);
+        loginUser.refetch();
+        navigate("/auth/login");
     }
 
     return (
@@ -62,7 +69,7 @@ function MainSidebar(props) {
                 </div>
                 <div>
                     <div css={s.groupLayout}>
-                        <button css={emptyButton}>
+                        <button css={emptyButton} onClick={handleLogoutButtonOnClick}>
                             <span css={s.authText}>
                                 <BiLogOut /> 로그아웃
                             </span>
