@@ -37,4 +37,8 @@ public class UserRepository {
         userMapper.updatePasswordById(userId, password);
     }
 
+    public void updateAccountEnabled(String username) {
+        userMapper.updateAccountEnabledByUsername(username);
+    }
+
 }

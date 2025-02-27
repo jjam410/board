@@ -65,7 +65,7 @@ public class UserService {
                 .build();
         userRoleRepository.save(userRole);
         try {
-            emailService.sendAuthMail(reqJoinDto.getEmail());
+            emailService.sendAuthMail(reqJoinDto.getEmail(), reqJoinDto.getUsername());
         } catch (Exception e) {
             e.printStackTrace();
         }

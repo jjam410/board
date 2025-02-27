@@ -3,6 +3,7 @@ package com.korit.boardback.security.principal;
 import com.korit.boardback.entity.User;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
