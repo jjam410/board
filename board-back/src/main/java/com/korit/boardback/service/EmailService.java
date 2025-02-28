@@ -83,7 +83,6 @@ public class EmailService {
                     responseMessage = "[인증성공] 인증에 성공하였습니다.";
                 }
             }
-
         } catch (Exception e) {
             responseMessage = "[인증실패] 토큰이 유효하지 않거나 인증 시간을 초과하였습니다.";
         }

@@ -42,9 +42,6 @@ public class JwtAuthenticationFilter implements Filter {
         User user = userRepository.findById(userId).get();
 
         PrincipalUser principalUser = PrincipalUser.builder().user(user).build();
-        if (!principalUser.isEnabled()) {
-            throw new DisabledException("User account is disabled");
-        }
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(principalUser, null, principalUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);

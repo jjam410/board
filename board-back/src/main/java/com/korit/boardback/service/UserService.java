@@ -9,8 +9,10 @@ import com.korit.boardback.exception.FieldError;
 import com.korit.boardback.repository.UserRepository;
 import com.korit.boardback.repository.UserRoleRepository;
 import com.korit.boardback.security.jwt.JwtUtil;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,12 @@ public class UserService {
     private FileService fileService;
     @Autowired
     private EmailService emailService;
+
+    public User getUserByUsername(String username) throws Exception {
+        return userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("사용자를 찾지 못했습니다."));
+    }
 
     public boolean duplicatedByUsername(String username) {
         return userRepository.findByUsername(username).isPresent();
@@ -79,6 +87,10 @@ public class UserService {
 
         if(!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("사용자 정보를 다시 확인하세요.");
+        }
+        // 이메일 인증 여부 확인
+        if(user.getAccountEnabled() == 0) {
+            throw new DisabledException("이메일 인증이 필요합니다.");
         }
 
         Date expires = new Date(new Date().getTime() + (1000l * 60 * 60 * 24 * 7));
