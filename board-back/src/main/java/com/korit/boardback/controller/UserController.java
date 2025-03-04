@@ -75,6 +75,16 @@ public class UserController {
         emailService.sendChangeEmailVerification(email, code);
         return ResponseEntity.ok().body(code);
     }
+
+    @PutMapping("/user/profile/email")
+    public ResponseEntity<?> changeEmail(
+            @AuthenticationPrincipal PrincipalUser principalUser,
+            @RequestBody Map<String, String> requestBody
+    ) {
+        String email = requestBody.get("email");
+        userService.updateEmail(principalUser.getUser(), email);
+        return ResponseEntity.ok().build();
+    }
 }
 
 

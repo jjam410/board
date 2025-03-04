@@ -4,10 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { RiCloseCircleFill } from "react-icons/ri";
 import { CgMail } from "react-icons/cg";
 import Swal from 'sweetalert2';
-import { useSendVerifyEmailMutation } from '../../../mutations/accountMutation';
+import { useSendVerifyEmailMutation, useUpdateEmailMutation } from '../../../mutations/accountMutation';
+import { useQueryClient } from '@tanstack/react-query';
 
 function ChangeEmailModal({ setOpen }) {
+    const queryClient = useQueryClient();
     const verifyEmailMutation = useSendVerifyEmailMutation();
+    const updateEmailMutation = useUpdateEmailMutation();
+
     const [ emailValue, setEmailValue ] = useState("");
     const [ time, setTime ] = useState(60 * 5);
     const [ isSend, setSend ] = useState(false);
@@ -50,7 +54,7 @@ function ChangeEmailModal({ setOpen }) {
         setTime(60 * 5);
         setSend(true);
         const response = await verifyEmailMutation.mutateAsync(emailValue);
-        setVerifyCode(response.data);
+        setVerifyCode(response.data.toString().padStart(6, '0'));
     }
 
     const handleVerifyInputOnChange = (e) => {
@@ -84,11 +88,13 @@ function ChangeEmailModal({ setOpen }) {
             });
             return;
         }
-
+        await updateEmailMutation.mutateAsync(emailValue);
         await Swal.fire({
             titleText: "이메일 변경 완료",
             confirmButtonText: "확인",
         });
+        await queryClient.invalidateQueries({queryKey: ["userMeQuery"]});
+        setOpen(false);
     }
 
     const handleCloseButtonOnClick = () => {

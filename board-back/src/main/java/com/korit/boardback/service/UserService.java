@@ -121,6 +121,11 @@ public class UserService {
         userRepository.updatePassword(user.getUserId(), encodedPassword);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void updateEmail(User user, String email) {
+        userRepository.updateEmail(user.getUserId(), email);
+    }
+
 }
 
 
