@@ -4,11 +4,22 @@ import React, { useEffect, useState } from 'react';
 import { RiCloseCircleFill } from "react-icons/ri";
 import { CgMail } from "react-icons/cg";
 import Swal from 'sweetalert2';
+import { useSendVerifyEmailMutation } from '../../../mutations/accountMutation';
 
 function ChangeEmailModal({ setOpen }) {
+    const verifyEmailMutation = useSendVerifyEmailMutation();
     const [ emailValue, setEmailValue ] = useState("");
     const [ time, setTime ] = useState(60 * 5);
     const [ isSend, setSend ] = useState(false);
+    const [ verifyInputValue, setVerifyInputValue ] = useState({
+        first: "",
+        second: "",
+        third: "",
+        fourth: "",
+        fifth: "",
+        sixth: "",
+    });
+    const [ verifyCode, setVerifyCode ] = useState("");
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -35,13 +46,49 @@ function ChangeEmailModal({ setOpen }) {
         setEmailValue(e.target.value);
     }
 
-    const handleSendMailOnClick = () => {
-        setTime(5);
+    const handleSendMailOnClick = async () => {
+        setTime(60 * 5);
         setSend(true);
+        const response = await verifyEmailMutation.mutateAsync(emailValue);
+        setVerifyCode(response.data);
     }
 
-    const handleSetButtonOnClick = () => {
+    const handleVerifyInputOnChange = (e) => {
+        setVerifyInputValue(prev => { 
+            if(/^[0-9]?$/.test(e.target.value)) {
+                return {
+                    ...prev,
+                    [e.target.name]: e.target.value,
+                }
+            }
+            return {
+                ...prev
+            }
+        })
+    }
 
+    const handleSetButtonOnClick = async () => {
+        const inputCode = 
+            verifyInputValue.first
+            + verifyInputValue.second
+            + verifyInputValue.third
+            + verifyInputValue.fourth
+            + verifyInputValue.fifth
+            + verifyInputValue.sixth;
+
+        if(verifyCode.toString() !== inputCode) {
+            await Swal.fire({
+                titleText: "인증번호가 일치하지 않습니다.",
+                confirmButtonText: "확인",
+                confirmButtonColor: "#d02121",
+            });
+            return;
+        }
+
+        await Swal.fire({
+            titleText: "이메일 변경 완료",
+            confirmButtonText: "확인",
+        });
     }
 
     const handleCloseButtonOnClick = () => {
@@ -63,6 +110,7 @@ function ChangeEmailModal({ setOpen }) {
                     <label>Enter a new email</label>
                     <div css={s.emailInputAndSendButton}>
                         <input type="email" name='newEmail' 
+                            disabled={isSend}
                             value={emailValue} 
                             onChange={handleEmailInputOnChange} />
                         {
@@ -74,9 +122,22 @@ function ChangeEmailModal({ setOpen }) {
                         }
                     </div>
                 </div>
+                {
+                    isSend && 
+                    <div css={s.inputGroup}>
+                        <div css={s.verifyInput}>
+                            <input type="number" name='first' value={verifyInputValue.first} onChange={handleVerifyInputOnChange}/>
+                            <input type="number" name='second' value={verifyInputValue.second} onChange={handleVerifyInputOnChange}/>
+                            <input type="number" name='third' value={verifyInputValue.third} onChange={handleVerifyInputOnChange}/>
+                            <input type="number" name='fourth' value={verifyInputValue.fourth} onChange={handleVerifyInputOnChange}/>
+                            <input type="number" name='fifth' value={verifyInputValue.fifth} onChange={handleVerifyInputOnChange}/>
+                            <input type="number" name='sixth' value={verifyInputValue.sixth} onChange={handleVerifyInputOnChange}/>
+                        </div>
+                    </div>
+                }
                 <button 
                     css={s.setButton} 
-                    disabled={!emailValue}
+                    disabled={!emailValue || Object.values(verifyInputValue).includes("")}
                     onClick={handleSetButtonOnClick}
                 >Set a eamil address</button>
             </div>

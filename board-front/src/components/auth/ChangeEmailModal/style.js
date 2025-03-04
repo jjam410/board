@@ -61,6 +61,24 @@ export const inputGroup = css`
     }
 `;
 
+export const verifyInput = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    & > input {
+        margin: 0 0.5rem;
+        width: 2rem;
+        height: 2rem;
+        text-align: center;
+
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    }
+`;
+
 export const emailInputAndSendButton = css`
     display: flex;
     align-items: center;
