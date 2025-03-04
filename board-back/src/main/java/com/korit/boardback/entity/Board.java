@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Board {
     private int boardId;
-    private int categoryId;
+    private int boardCategoryId;
     private int userId;
     private String title;
     private String content;

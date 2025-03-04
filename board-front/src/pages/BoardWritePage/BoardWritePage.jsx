@@ -5,15 +5,21 @@ import "quill/dist/quill.snow.css";
 import React, { useEffect, useRef, useState } from 'react';
 import { basicButton, emptyButton } from '../../styles/buttons';
 import Swal from 'sweetalert2';
+import { useParams } from 'react-router-dom';
+import { useCreateBoardMutation } from '../../mutations/boardMutation';
 
 
 
 function BoardWritePage(props) {
+    const params = useParams();
+    const createBoardMutation = useCreateBoardMutation();
+
     const [ quill, setQuill ] = useState(null);
     const [ title, setTitle ] = useState("");
     const [ quillContent, setQuillContent ] = useState("");
 
     useEffect(() => {
+        console.log(params.categoryName);
         console.log(quillContent);
     }, [quillContent]);
 
@@ -64,7 +70,14 @@ function BoardWritePage(props) {
         const board = {
             title,
             content: quillContent,
+            categoryName: params.categoryName,
         }
+
+        const response = await createBoardMutation.mutateAsync(board);
+        await Swal.fire({
+            titleText: "게시글 작성 완료",
+            confirmButtonText: "확인",
+        });
     }
     
     return (

@@ -25,7 +25,7 @@ function MainRoute(props) {
             <MainContainer>
                 <Routes>
                     <Route path="/account/setting" element={<AccountPage />} />
-                    <Route path="/board/write" element={<BoardWritePage />} />
+                    <Route path="/board/write/:categoryName" element={<BoardWritePage />} />
                     <Route path="/*" element={<NotFoundPage />} />
                 </Routes>
             </MainContainer>

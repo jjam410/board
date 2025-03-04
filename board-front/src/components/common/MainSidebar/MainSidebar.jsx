@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { BiEdit, BiLogOut } from "react-icons/bi";
 import { setTokenLocalStorage } from '../../../configs/axiosConfig';
 import { useQueryClient } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
 
 function MainSidebar(props) {
     const navigate = useNavigate();
@@ -32,8 +33,18 @@ function MainSidebar(props) {
         navigate("/auth/login");
     }
 
-    const handleWriteOnClick = () => {
-        navigate("/board/write");
+    const handleWriteOnClick = async () => {
+        const categoryData = await Swal.fire({
+            title: "카테고리명을 입력하세요",
+            input: "text",
+            inputPlaceholder: "Enter category name...",
+            showCancelButton: true,
+            confirmButtonText: "작성하기",
+            cancelButtonText: "취소하기"
+        });
+        if(categoryData.isConfirmed) {
+            navigate(`/board/write/${categoryData.value}`);
+        }
     }
 
     return (
