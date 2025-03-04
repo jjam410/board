@@ -1,43 +1,81 @@
+/**@jsxImportSource @emotion/react */
+import * as s from './style';
 import Quill from 'quill';
 import "quill/dist/quill.snow.css";
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { basicButton, emptyButton } from '../../styles/buttons';
+import Swal from 'sweetalert2';
 
 
 
 function BoardWritePage(props) {
+    const [ quill, setQuill ] = useState(null);
+    const [ title, setTitle ] = useState("");
+    const [ quillContent, setQuillContent ] = useState("");
+
+    useEffect(() => {
+        console.log(quillContent);
+    }, [quillContent]);
+
     const containerRef = useRef();
     useEffect(() => {
         const toolbarOptions = [
-            ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-            ['blockquote', 'code-block'],
-            ['link', 'image', 'video', 'formula'],
-          
-            [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
-            [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-            [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-            [{ 'direction': 'rtl' }],                         // text direction
-          
-            [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
             [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          
-            [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-            [{ 'font': [] }],
-            [{ 'align': [] }],
-          
-            ['clean']                                         // remove formatting button
-          ];
+            [{ 'font': [] }, 'bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }, { 'align': [] }],          // dropdown with defaults from theme
+            ['link', 'image', 'video', 'formula'],
+        ];
+
         const quill = new Quill(containerRef.current, {
             modules: {
                 toolbar: toolbarOptions,
             },
             theme: "snow",
+            placeholder: "Write, Enter your content..."
         });
-    }, [])
+
+        setQuill(quill);
+
+        quill.on('text-change', () => {
+            setQuillContent(quill.root.innerHTML);
+        });
+    }, []);
+
+    const handleTitleOnChange = (e) => {
+        setTitle(e.target.value);
+    }
+
+    const handleSaveOnClick = async () => {
+        if(!title.trim()) {
+            await Swal.fire({
+                titleText: "제목을 입력하세요.",
+                confirmButtonText: "확인",
+            });
+            return;
+        }
+        if(!quill.root.innerText.trim()) {
+            await Swal.fire({
+                titleText: "게시글 내용을 입력하세요.",
+                confirmButtonText: "확인",
+            });
+            return;
+        }
+
+        const board = {
+            title,
+            content: quillContent,
+        }
+    }
     
     return (
-        <div ref={containerRef}>
-            
+        <div css={s.quillEditor}>
+            <div css={s.quillTop}>
+                <input type="text" placeholder='Enter board title...'
+                    value={title} onChange={handleTitleOnChange}
+                />
+                <button css={s.saveButton} onClick={handleSaveOnClick}>Save</button>
+            </div>
+            <div ref={containerRef} />
         </div>
     );
 }

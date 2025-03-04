@@ -8,7 +8,7 @@ import { mainSidebarIsOpenState } from '../../../atoms/mainSidebar/mainSidebarAt
 import { LuLockKeyhole } from "react-icons/lu";
 import { useUserMeQuery } from '../../../queries/userQuery';
 import { useNavigate } from 'react-router-dom';
-import { BiLogOut } from "react-icons/bi";
+import { BiEdit, BiLogOut } from "react-icons/bi";
 import { setTokenLocalStorage } from '../../../configs/axiosConfig';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -32,6 +32,10 @@ function MainSidebar(props) {
         navigate("/auth/login");
     }
 
+    const handleWriteOnClick = () => {
+        navigate("/board/write");
+    }
+
     return (
         <div css={s.layout(isOpen)}>
             <div css={s.container}>
@@ -50,6 +54,33 @@ function MainSidebar(props) {
                             </div>
                             <button css={basicButton} onClick={handleSidebarClose}><FiChevronsLeft /></button>
                         </div>
+                    </div>
+                    <div css={s.groupLayout}>
+                        <button css={emptyButton}>
+                            <span>
+                                전체 게시글
+                            </span>
+                        </button>
+                    </div>
+                    <div css={s.groupLayout}>
+                        <button css={emptyButton}>
+                            <span>
+                                공지사항
+                            </span>
+                        </button>
+                    </div>
+                    <div css={s.groupLayout}>
+                        <button css={emptyButton}>
+                            <span css={s.categoryText}>
+                                내가 작성한 글
+                                <span css={s.writeButton}>
+                                    <button css={basicButton} onClick={handleWriteOnClick}><BiEdit /></button>
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                    <div>
+
                     </div>
                 </div>
                 <div>
