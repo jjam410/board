@@ -12,12 +12,14 @@ import { BiEdit, BiLogOut } from "react-icons/bi";
 import { setTokenLocalStorage } from '../../../configs/axiosConfig';
 import { useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
+import { useGetCategories } from '../../../queries/boardQuery';
 
 function MainSidebar(props) {
     const navigate = useNavigate();
     const [ isOpen, setOpen ] = useRecoilState(mainSidebarIsOpenState);
     const queryClient = useQueryClient();
     const loginUserData = queryClient.getQueryData(["userMeQuery"]);
+    const categories = useGetCategories();
 
     const handleSidebarClose = () => {
         setOpen(false);
@@ -81,18 +83,24 @@ function MainSidebar(props) {
                         </button>
                     </div>
                     <div css={s.groupLayout}>
-                        <button css={emptyButton}>
-                            <span css={s.categoryText}>
-                                내가 작성한 글
-                                <span css={s.writeButton}>
-                                    <button css={basicButton} onClick={handleWriteOnClick}><BiEdit /></button>
-                                </span>
-                            </span>
-                        </button>
+                        <div css={s.categoryItem}>
+                            <button css={emptyButton}>내가 작성한 글</button>
+                            <button css={basicButton} onClick={handleWriteOnClick}><BiEdit /></button>
+                        </div>
                     </div>
-                    <div>
-
-                    </div>
+                </div>
+                <div css={s.categoryListContainer}>
+                    {
+                        categories.isLoading ||
+                        categories.data.data.map(category =>
+                            <div css={s.groupLayout}>
+                                <div css={s.categoryItem}>
+                                    <button css={emptyButton}>{category.boardCategoryName}({category.boardCount})</button>
+                                    <button css={basicButton}><BiEdit /></button>
+                                </div>
+                            </div>
+                        )
+                    }
                 </div>
                 <div>
                     <div css={s.groupLayout}>
