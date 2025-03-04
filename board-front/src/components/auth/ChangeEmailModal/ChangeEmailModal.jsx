@@ -3,27 +3,40 @@ import * as s from './style';
 import React, { useEffect, useState } from 'react';
 import { RiCloseCircleFill } from "react-icons/ri";
 import { CgMail } from "react-icons/cg";
+import Swal from 'sweetalert2';
 
 function ChangeEmailModal({ setOpen }) {
     const [ emailValue, setEmailValue ] = useState("");
-    const [ time, setTime ] = useState(1000 * 60 * 5);
+    const [ time, setTime ] = useState(60 * 5);
     const [ isSend, setSend ] = useState(false);
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setTime(prev => prev - 1000);
+            setTime(prev => prev > 0 ? prev - 1 : 0);
         }, 1000);
         return () => {
             clearInterval(timer);
         }
     }, [isSend]);
 
+    useEffect(() => {
+        if(time === 0) {
+            Swal.fire({
+                showConfirmButton: true,
+                confirmButtonText: "확인",
+                titleText: "인증 시간이 만료되었습니다.",
+            }).then(() => {
+                setOpen(false);
+            })
+        }
+    }, [time]);
+
     const handleEmailInputOnChange = (e) => {
         setEmailValue(e.target.value);
     }
 
     const handleSendMailOnClick = () => {
-        setTime(1000 * 60 * 5);
+        setTime(5);
         setSend(true);
     }
 
@@ -55,7 +68,7 @@ function ChangeEmailModal({ setOpen }) {
                         {
                             isSend
                             ? 
-                            <span>{time}</span>
+                            <span>{Math.floor(time / 60).toString().padStart(2, '0')}:{(time % 60).toString().padStart(2, '0')}</span>
                             :
                             <button onClick={handleSendMailOnClick}>전송</button>
                         }

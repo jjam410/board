@@ -63,6 +63,7 @@ export const inputGroup = css`
 
 export const emailInputAndSendButton = css`
     display: flex;
+    align-items: center;
 
     & > input {
         box-sizing: border-box;
@@ -75,6 +76,13 @@ export const emailInputAndSendButton = css`
         font-size: 1.4rem;
         color: #666666;
         background-color: #fafafa;
+    }
+
+    & > span {
+        margin-right: 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 1.4rem;
+        cursor: default;
     }
 
     & > button {
