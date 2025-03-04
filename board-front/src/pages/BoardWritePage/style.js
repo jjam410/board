@@ -6,14 +6,20 @@ export const quillEditor = css`
     height: 60rem;
 
     .ql-toolbar {
+        box-sizing: border-box;
         display: flex;
         justify-content: flex-start;
         flex-wrap: wrap;
         border: none;
         border-bottom: 0.1rem solid #dbdbdb;
+        &.ql-snow {
+            box-sizing: border-box;
+            padding: 1rem 0;
+        }
     }
 
     .ql-container {
+        box-sizing: border-box;
         height: 85%;
         border: none;
     }
