@@ -129,7 +129,13 @@ export const boardWriter = css`
     }
 
     & > span {
+        display: block;
+        width: 70%;
+        padding-right: 1rem;
         margin-bottom: 0.1rem;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
     }
 `;
 
@@ -150,9 +156,11 @@ export const boardCounts = css`
             position: absolute;
             transform: translateX(-50%);
             left: 50%;
+            z-index: 2;
             border-radius: 0.5rem;
             padding: 0.3rem 0.5rem;
-            background-color: #fafafa;
+            background-color: #000000c6;
+            color: #ffffff;
             font-size: 1.4rem;
         }
     }

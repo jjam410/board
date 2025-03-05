@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCategoriesApi } from "../apis/boardApi";
+import { getCategoriesApi, getSearchBoardListApi } from "../apis/boardApi";
 
 export const useGetCategories = () => useQuery({
     queryKey: ["useGetCategories"],
@@ -8,3 +8,19 @@ export const useGetCategories = () => useQuery({
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 5
 });
+
+export const useGetSearchBoardList = () => useQuery({
+    queryKey: ["useGetSearchBoardList"],
+    queryFn: async () => {
+        const params = {
+            page: 1,
+            limitCount: 15,
+            order: "recent",
+            searchText: "",
+        };
+        return await getSearchBoardListApi(params);
+    },
+    retry: 0,
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 5
+})
