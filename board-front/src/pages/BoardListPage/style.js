@@ -203,6 +203,7 @@ export const pageNumbers = css`
     }
 `;
 
+
 export const pageNum = (isSelect) => css`
     background-color: ${isSelect ? "#eeeeee" : "#ffffff"} !important;
 `;

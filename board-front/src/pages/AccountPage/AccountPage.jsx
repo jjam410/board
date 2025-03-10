@@ -11,7 +11,7 @@ import ChangeEmailModal from '../../components/auth/ChangeEmailModal/ChangeEmail
 
 function AccountPage(props) {
     const loginUser = useUserMeQuery();
-    const updateProfileImgMutation = useUpdateProfileImgMutation();
+    const updateProfileImgMutation = useUpdateProfileImgMutation(); // 1
     const updateNicknameMutation = useUpdateNicknameMutation();
 
     const [ emailModalOpen, setEmailModalOpen ] = useState(false);
