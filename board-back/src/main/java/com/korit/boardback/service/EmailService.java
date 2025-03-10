@@ -22,7 +22,7 @@ import java.util.Random;
 @Service
 public class EmailService {
 
-    private final String FROM_EMAIL = "skjil1218@gmail.com";
+    private final String FROM_EMAIL = "tnghks5859@gmail.com";
 
     @Autowired(required = false)
     private JavaMailSender javaMailSender;
